@@ -2,6 +2,18 @@ import random
 
 from flask import Flask
 
+
+def check_valid_number(function):
+    def wrapper(**kwargs):
+        number = kwargs.get('number')
+        if number is None or number < 0 or number > 9:
+            return ("<h1>Invalid Number: Make sure to guess a number between 0 and 9!</h1>"
+                    "<img src='https://media.giphy.com/media/B0uJ6d5OXb50k/giphy.gif' alt='gif of a warning sign'>")
+        return function(**kwargs)
+
+    return wrapper
+
+
 random_number = random.randint(0, 9)
 
 app = Flask(__name__)
@@ -14,6 +26,7 @@ def home():
 
 
 @app.route("/<int:number>")
+@check_valid_number
 def check_it(number):
     if number > random_number:
         return "<h1 style='color: purple'>Too high, try again!</h1>" \
